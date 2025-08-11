@@ -1,26 +1,44 @@
 {
     "compilerOptions": {
+        // Xuất code theo chuẩn module CommonJS (Node.js)
         "module": "commonjs",
+        // Sinh file khai báo .d.ts cho mỗi file TS
         "declaration": true,
+        // Xóa comment khi biên dịch
         "removeComments": true,
+        // Sinh metadata cho decorator (cần cho NestJS)
         "emitDecoratorMetadata": true,
+        // Bật hỗ trợ decorator (cần cho NestJS)
         "experimentalDecorators": true,
+        // Cho phép import mặc định từ module không có export default
         "allowSyntheticDefaultImports": true,
+        // Biên dịch sang chuẩn ECMAScript 2021
         "target": "ES2021",
+        // Sinh file map để debug
         "sourceMap": true,
+        // Thư mục chứa file sau khi biên dịch
         "outDir": "./dist",
+        // Thư mục gốc cho các đường dẫn import
         "baseUrl": "./",
+        // Alias import: @/ trỏ tới src
         "paths": {
             "@/*": [
                 "./src/*"
             ]
         },
+        // Bật biên dịch tăng dần (nhanh hơn khi build lại)
         "incremental": true,
+        // Bỏ qua kiểm tra type trong thư viện
         "skipLibCheck": true,
+        // Không kiểm tra chặt chẽ với giá trị null/undefined
         "strictNullChecks": false,
+        // Cho phép biến không khai báo kiểu sẽ có kiểu any
         "noImplicitAny": false,
+        // Không kiểm tra chặt chẽ với bind/call/apply
         "strictBindCallApply": false,
+        // Không bắt buộc phân biệt hoa thường trong tên file
         "forceConsistentCasingInFileNames": false,
+        // Cho phép rơi qua case trong switch mà không cảnh báo
         "noFallthroughCasesInSwitch": false
     }
 }
