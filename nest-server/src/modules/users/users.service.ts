@@ -4,8 +4,9 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './schemas/user.schema';
 import { Model } from 'mongoose';
-import { hashPasswordHelper } from '@/utils/hashPasswordHelper';
+import { hashPasswordHelper } from '@/utils/PasswordHelper';
 import aqp from 'api-query-params';
+import mongoose from 'mongoose';
 @Injectable()
 export class UsersService {
   constructor(
@@ -65,11 +66,28 @@ export class UsersService {
     return `This action returns a #${id} user`;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async findByEmail(email: string) {
+    return await this.userModel.findOne({ email });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async update(updateUserDto: UpdateUserDto) {
+    return await this.userModel.updateOne(
+      {
+        _id: updateUserDto._id,
+      },
+      {
+        ...updateUserDto,
+      },
+    );
+  }
+
+  async remove(id: string) {
+    //check id
+    if (mongoose.isValidObjectId(id)) {
+      //delete
+      return this.userModel.deleteOne({ _id: id });
+    } else {
+      throw new BadRequestException(`Invalid user ID format: ${id}`);
+    }
   }
 }

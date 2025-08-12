@@ -12,6 +12,7 @@ import { RestaurantsModule } from './modules/restaurants/restaurants.module';
 import { ReviewsModule } from './modules/reviews/reviews.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import { AuthModule } from '@/auth/auth.module';
 @Module({
   imports: [
     UsersModule,
@@ -31,6 +32,7 @@ import { MongooseModule } from '@nestjs/mongoose';
       }),
       inject: [ConfigService],
     }),
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
