@@ -39,6 +39,8 @@
         // Không bắt buộc phân biệt hoa thường trong tên file
         "forceConsistentCasingInFileNames": false,
         // Cho phép rơi qua case trong switch mà không cảnh báo
-        "noFallthroughCasesInSwitch": false
+        "noFallthroughCasesInSwitch": false,
+        // Cho phép import mặc định từ module không có export default
+        "esModuleInterop": true,
     }
 }
