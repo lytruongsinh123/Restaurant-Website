@@ -10,6 +10,7 @@ const Login = () => {
         const { email, password } = values;
         //trigger sign-in
         const res = await authenticate(email, password);
+        console.log(">>> check res", res);
     };
 
     return (

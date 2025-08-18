@@ -1,6 +1,10 @@
 import { Strategy } from 'passport-local';
 import { PassportStrategy } from '@nestjs/passport';
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { AuthService } from '../auth.service';
 
 @Injectable()
@@ -17,6 +21,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     if (user.isActive === false) {
       throw new BadRequestException('User account is not activated');
     }
+    // Trả về object user => tự động gắn vào req.user
     return user;
   }
 }

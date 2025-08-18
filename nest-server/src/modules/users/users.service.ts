@@ -13,6 +13,9 @@ import dayjs from 'dayjs';
 import { MailerService } from '@nestjs-modules/mailer';
 @Injectable()
 export class UsersService {
+  findById(_id: any) {
+      throw new Error('Method not implemented.');
+  }
   constructor(
     @InjectModel(User.name)
     private userModel: Model<User>,

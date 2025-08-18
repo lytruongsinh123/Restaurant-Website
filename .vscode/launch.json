@@ -22,6 +22,19 @@
             "port": 9229,
             "autoAttachChildProcesses": true,
             "cwd": "${workspaceFolder}/nest-server"
+        },
+        {
+            "type": "node-terminal",
+            "request": "launch",
+            "name": "Next.js: debug full stack",
+            "command": "npm run dev",
+            "cwd": "${workspaceFolder}/my-app",
+            "serverReadyAction": {
+                "pattern": "started server on .+, url: (https?://.+)",
+                "uriFormat": "%s",
+                "action": "debugWithChrome"
+            },
+            "autoAttachChildProcesses": true
         }
     ]
 }

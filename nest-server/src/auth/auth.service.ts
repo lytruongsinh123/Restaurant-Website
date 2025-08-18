@@ -19,10 +19,18 @@ export class AuthService {
   async login(user: any) {
     const payload = { username: user.email, sub: user._id };
     return {
+      user: {
+        _id: user._id,
+        email: user.email,
+        name: user.name,
+      },
       access_token: this.jwtService.sign(payload),
     };
   }
   async handleRegister(createAuthDto: CreateAuthDto) {
     return await this.usersService.handleRegister(createAuthDto);
+  }
+  async getProfile(user: any) {
+    return this.usersService.findById(user._id);
   }
 }
