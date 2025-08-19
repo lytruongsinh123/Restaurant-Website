@@ -7,14 +7,14 @@ import { Model } from 'mongoose';
 import { hashPasswordHelper } from '@/utils/PasswordHelper';
 import aqp from 'api-query-params';
 import mongoose from 'mongoose';
-import { CreateAuthDto } from '@/auth/dto/create-auth.dto';
+import { CodeAuthDto, CreateAuthDto } from '@/auth/dto/create-auth.dto';
 import { v4 as uuidv4 } from 'uuid';
 import dayjs from 'dayjs';
 import { MailerService } from '@nestjs-modules/mailer';
 @Injectable()
 export class UsersService {
   findById(_id: any) {
-      throw new Error('Method not implemented.');
+    throw new Error('Method not implemented.');
   }
   constructor(
     @InjectModel(User.name)
@@ -131,5 +131,54 @@ export class UsersService {
     return {
       _id: user._id,
     };
+  }
+
+  async handleActive(data: CodeAuthDto) {
+    const user = await this.userModel.findOne({
+      _id: data._id,
+      codeId: data.code,
+    });
+    if (!user) {
+      throw new BadRequestException('Code is invalid or out of date');
+    }
+    // check expire code
+    const isBeforeCheck = dayjs().isBefore(user.codeExpired); // check thời gian hiện tại đã đến hạn hay chưa
+    if (isBeforeCheck) {
+      // valid => update
+      await this.userModel.updateOne(
+        {
+          _id: data._id,
+        },
+        { isActive: true },
+      );
+      return { isBeforeCheck };
+    } else {
+      throw new BadRequestException('Code is invalid or out of date');
+    }
+  }
+  async retryActive(email: string) {
+    const user = await this.userModel.findOne({ email });
+    if (!user) {
+      throw new BadRequestException('Account is not exist');
+    }
+    if (user.isActive) {
+      throw new BadRequestException('Account has been activated');
+    }
+    //send email
+    const codeId = uuidv4();
+    await user.updateOne({
+      codeId: codeId,
+      codeExpired: dayjs().add(5, 'minutes'),
+    });
+    this.mailerService.sendMail({
+      to: user.email, // list of receivers
+      subject: 'Activated your account @Restaurant Website✔', // Subject line
+      template: 'register.hbs',
+      context: {
+        name: user?.name ?? user.email,
+        activationCode: codeId,
+      },
+    });
+    return { _id: user._id };
   }
 }

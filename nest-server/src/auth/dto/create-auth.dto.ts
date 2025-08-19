@@ -8,3 +8,10 @@ export class CreateAuthDto {
   @IsOptional({ message: 'Name is required' })
   name: string;
 }
+
+export class CodeAuthDto {
+  @IsNotEmpty({ message: 'Id is required' })
+  _id: string;
+  @IsNotEmpty({ message: 'Code is required' })
+  code: string;
+}
