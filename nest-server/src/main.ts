@@ -9,11 +9,17 @@ async function bootstrap() {
   const port = configService.get('PORT');
   app.useGlobalPipes(
     new ValidationPipe({
-        whitelist: true, // thuộc tính chỉ giữ lại các field thuộc DTO
-        forbidNonWhitelisted: true // thuộc tính không có trong DTO sẽ bị từ chối
+      whitelist: true, // thuộc tính chỉ giữ lại các field thuộc DTO
+      forbidNonWhitelisted: true, // thuộc tính không có trong DTO sẽ bị từ chối
     }),
   );
   app.setGlobalPrefix('api/v1', { exclude: [''] });
+  app.enableCors({
+    origin: true,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    preflightContinue: false,
+    credentials: true,
+  });
   await app.listen(port);
 }
 bootstrap();
