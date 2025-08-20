@@ -15,3 +15,17 @@ export class CodeAuthDto {
   @IsNotEmpty({ message: 'Code is required' })
   code: string;
 }
+
+export class ChangePasswordAuthDto {
+  @IsNotEmpty({ message: 'Code is required' })
+  code: string;
+
+  @IsNotEmpty({ message: 'Password is required' })
+  password: string;
+
+  @IsNotEmpty({ message: 'Confirmpassword is required' })
+  confirmPassword: string;
+
+  @IsNotEmpty({ message: 'Email is required' })
+  email: string;
+}

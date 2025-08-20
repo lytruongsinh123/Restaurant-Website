@@ -7,7 +7,11 @@ import { Model } from 'mongoose';
 import { hashPasswordHelper } from '@/utils/PasswordHelper';
 import aqp from 'api-query-params';
 import mongoose from 'mongoose';
-import { CodeAuthDto, CreateAuthDto } from '@/auth/dto/create-auth.dto';
+import {
+  ChangePasswordAuthDto,
+  CodeAuthDto,
+  CreateAuthDto,
+} from '@/auth/dto/create-auth.dto';
 import { v4 as uuidv4 } from 'uuid';
 import dayjs from 'dayjs';
 import { MailerService } from '@nestjs-modules/mailer';
@@ -180,5 +184,47 @@ export class UsersService {
       },
     });
     return { _id: user._id };
+  }
+
+  async retryPassword(email: string) {
+    const user = await this.userModel.findOne({ email });
+    if (!user) {
+      throw new BadRequestException('Account is not exist');
+    }
+    //send email
+    const codeId = uuidv4();
+    await user.updateOne({
+      codeId: codeId,
+      codeExpired: dayjs().add(5, 'minutes'),
+    });
+    this.mailerService.sendMail({
+      to: user.email, // list of receivers
+      subject: 'Change your password account @Restaurant Website✔', // Subject line
+      template: 'register.hbs',
+      context: {
+        name: user?.name ?? user.email,
+        activationCode: codeId,
+      },
+    });
+    return { _id: user._id, email: user.email };
+  }
+
+  async changePassword(data: ChangePasswordAuthDto) {
+    if (data.confirmPassword != data.password) {
+      throw new BadRequestException('Confirmpassword and password is invalid');
+    }
+    const user = await this.userModel.findOne({ email: data.email });
+    if (!user) {
+      throw new BadRequestException('Account is not exist');
+    }
+    const isBeforeCheck = dayjs().isBefore(user.codeExpired); // check thời gian hiện tại đã đến hạn hay chưa
+    if (isBeforeCheck) {
+      // valid => update password
+      const newPassword = await hashPasswordHelper(data.password);
+      await user.updateOne({ password: newPassword });
+      return { isBeforeCheck };
+    } else {
+      throw new BadRequestException('Code is invalid or out of date');
+    }
   }
 }
